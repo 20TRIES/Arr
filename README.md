@@ -5,7 +5,7 @@ A package for aiding the handling of arrays.
 
 ```
 "require": {
-    "20tries/Arr": "0.0.*"
+    "20tries/arr": "0.0.*"
 },
 ```
 
