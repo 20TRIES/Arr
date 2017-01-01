@@ -3,7 +3,7 @@
 use _20TRIES\Arr\Arr;
 use PHPUnit_Framework_TestCase;
 
-class GetTestTest extends PHPUnit_Framework_TestCase
+class GetTest extends PHPUnit_Framework_TestCase
 {
     public function test_get_returns_null_when_no_match_and_no_default_provided()
     {
