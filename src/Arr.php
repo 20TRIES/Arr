@@ -133,13 +133,14 @@ class Arr
      */
     public static function first($arr, $callback = null)
     {
-        $item = null;
+        $result = null;
         foreach ($arr as $key => $item) {
             if (is_null($callback) || $callback($item, $key) === true) {
+                $result = $item;
                 break;
             }
         }
-        return $item;
+        return $result;
     }
 
     /**
