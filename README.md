@@ -1,5 +1,5 @@
 # Arr
-A package for aiding the handling of arrays.
+A package for aiding the handling of arrays using 'dot notation'.
 
 ## Installation
 
