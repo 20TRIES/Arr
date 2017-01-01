@@ -42,7 +42,7 @@ class Arr
         } elseif(is_array($keys)) {
             // If $keys only has one element, we will optimise it down to a string so that we can do a single key
             // lookup.
-            $keys = self::head($keys);
+            $keys = self::first($keys);
         }
         foreach (self::splitKey($keys) as $key) {
             if (is_array($arr) && array_key_exists($key, $arr)) {
@@ -141,17 +141,6 @@ class Arr
             }
         }
         return $result;
-    }
-
-    /**
-     * Simplified alias of the first method.
-     *
-     * @param array $arr
-     * @return array|null
-     */
-    public static function head($arr)
-    {
-        return self::first($arr);
     }
 
     /**
