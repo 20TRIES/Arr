@@ -5,7 +5,7 @@ A package for aiding the handling of arrays using 'dot notation'.
 
 ```
 "require": {
-    "20tries/arr": "0.0.*"
+    "20tries/arr": "1.0.*"
 },
 ```
 

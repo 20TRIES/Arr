@@ -3,8 +3,6 @@
 /**
  * Helper class for interacting with arrays in a simple and clean way.
  *
- * Supports "dot notation".
- *
  * @package _20TRIES\Arr
  */
 class Arr
