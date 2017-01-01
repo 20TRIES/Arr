@@ -1,8 +1,8 @@
 {
     "name": "20tries/arr",
-    "description": "A package for aiding the handling of arrays.",
+    "description": "A package for aiding the handling of arrays using 'dot notation'",
     "keywords": [
-        "arr", "array", "array helper", "helper"
+        "arr", "array", "array helper", "helper", "dot", "array dot", "dot notation"
     ],
     "homepage": "https://github.com/20tries/Arr",
     "license": "MIT",
