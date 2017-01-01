@@ -55,19 +55,6 @@ class Arr
         return true;
     }
 
-
-    /**
-     * Gets a set of attributes from an array.
-     *
-     * @param array $arr
-     * @param array $keys
-     * @return array
-     */
-    public static function only($arr, $keys)
-    {
-        return array_intersect_key($arr, array_flip($keys));
-    }
-
     /**
      * Gets the keys available in an array.
      *
@@ -88,54 +75,40 @@ class Arr
      *
      * @param array $arr
      * @param callable $callback
-     * @return array
      */
     public static function traverse($arr, $callback)
     {
-        $sets = [['append' => '', 'items' => $arr]];
-        $parameter_sets = [];
-        Arr::reduce($sets, function ($sub_arr) use (&$sets, &$output, &$parameter_sets) {
-            Arr::reduce($sub_arr['items'], function ($value, $local_key) use (&$sets, $sub_arr, &$parameter_sets) {
-                $full_key = Arr::buildKey($sub_arr['append'], $local_key);
-                if (is_array($value) && ! empty($value)) {
-                    array_push($sets, [
-                            'append' => $sub_arr['append'],
-                            'items'  => $sub_arr['items'],
-                        ], [
-                            'append' => $full_key,
-                            'items'  => $value,
-                            'after'  => function () use (&$parameter_sets, $value, $full_key) {
-                                $parameter_sets[] = [$value, $full_key];
-                            },
-                        ]
-                    );
-                    return false;
-                }
-                $parameter_sets[] = [$value, $full_key];
-            });
-            if (array_key_exists('after', $sub_arr) && is_callable($sub_arr['after'])) {
-                $sub_arr['after']();
-            }
-        });
-        Arr::walk(array_reverse($parameter_sets), $callback, true);
-        return $output;
-    }
+        if (empty($arr)) {
+            return;
+        }
 
-    /**
-     * Apply a user supplied function to every member of an array.
-     *
-     * @param array $arr
-     * @param callable $callback
-     * @param bool $unpack (optional) Unpacks sub-array elements as separate parameters.
-     */
-    public static function walk($arr, $callback, $unpack = false)
-    {
-        foreach($arr as $parameter_set) {
-            if ($unpack) {
-                $callback(...$parameter_set);
-            } else {
-                $callback($parameter_set);
+        $lifo_queue = [];
+
+        // The order of items is reversed because they will be processed in reverse when pop'ed off of the
+        // queue.
+        array_push($lifo_queue, ...array_reverse(array_map(function ($value, $key) {
+            return ['key' => $key, 'value' => $value];
+        }, $arr, array_keys($arr))));
+
+        while (! empty($lifo_queue)) {
+            $item = array_pop($lifo_queue);
+
+            // If the item value is an array and is not empty, we will push each of the items in that array back onto
+            // the queue so that they will be processed next.
+            if (is_array($item['value']) && !empty($item['value'])) {
+
+                // The order of items is reversed because they will be processed in reverse when pop'ed off of the
+                // queue.
+                array_push($lifo_queue, ...array_reverse(array_map(function ($value, $key) use ($item) {
+                    return [
+                        'key'   => "{$item['key']}.{$key}",
+                        'value' => $value,
+                    ];
+                }, $item['value'], array_keys($item['value']))));
             }
+
+            // Pass the item to the callback function provided.
+            $callback($item['value'], $item['key']);
         }
     }
 
@@ -148,50 +121,6 @@ class Arr
     protected static function splitKey($key)
     {
         return is_string($key) ? explode('.', $key) : [$key];
-    }
-
-    /**
-     * Builds a dot notation style array key from an array of component keys.
-     *
-     * @param array ...$components
-     * @return string
-     */
-    public static function buildKey(...$components)
-    {
-        return implode('.', Arr::filter($components, function ($item) {
-            return ! is_string($item) || $item !== '';
-        }));
-    }
-
-    /**
-     * Iteratively reduce an array applying a callback function to each of the elements removed.
-     *
-     * @param array $arr
-     * @param callable $callback
-     * @return bool Returns true if all items were reduced, or false if reduction was halted early.
-     */
-    public static function reduce(&$arr, $callback)
-    {
-        while (! empty($arr)) {
-            end($arr);
-            $key = key($arr);
-            if($callback(array_pop($arr), $key) === false) {
-                return false;
-            };
-        }
-        return true;
-    }
-
-    /**
-     * Filters an array with a given callback.
-     *
-     * @param array $arr
-     * @param callable $callback
-     * @return array
-     */
-    public static function filter($arr, $callback)
-    {
-        return array_filter($arr, $callback, ARRAY_FILTER_USE_BOTH);
     }
 
     /**
@@ -214,7 +143,7 @@ class Arr
     }
 
     /**
-     * Gets the first element from an array.
+     * Simplified alias of the first method.
      *
      * @param array $arr
      * @return array|null
