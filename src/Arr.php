@@ -90,7 +90,7 @@ class Arr
             return ['key' => $key, 'value' => $value];
         }, $arr, array_keys($arr))));
 
-        while (! empty($lifo_queue)) {
+        do {
             $item = array_pop($lifo_queue);
 
             // If the item value is an array and is not empty, we will push each of the items in that array back onto
@@ -109,7 +109,7 @@ class Arr
 
             // Pass the item to the callback function provided.
             $callback($item['value'], $item['key']);
-        }
+        } while (! empty($lifo_queue));
     }
 
     /**
