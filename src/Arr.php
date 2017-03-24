@@ -127,11 +127,12 @@ class Arr
      * @param array $arr
      * @param null|callable $callback An optional callback that can be provided that must return true before an element
      * is returned; takes the value and then the key of each element in the array.
+     * @param mixed $default The default value that should be returned if no value is matched.
      * @return mixed
      */
-    public static function first($arr, $callback = null)
+    public static function first($arr, $callback = null, $default = null)
     {
-        $result = null;
+        $result = $default;
         foreach ($arr as $key => $item) {
             if (is_null($callback) || $callback($item, $key) === true) {
                 $result = $item;

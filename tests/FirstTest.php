@@ -42,8 +42,19 @@ class FirstTest extends PHPUnit_Framework_TestCase
         }));
     }
 
-    public function test_that_null_is_returned_if_array_is_empty()
+    /**
+     * @test
+     */
+    public function defaultValueIsNull()
     {
         $this->assertNull(Arr::first([]));
+    }
+
+    /**
+     * @test
+     */
+    public function defaultValueCanBeSet()
+    {
+        $this->assertSame(5, Arr::first([], null, 5));
     }
 }
